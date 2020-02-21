@@ -1,4 +1,4 @@
-# script that will generate completed sudoku puzzles with a unique solution.
+# script that will solve sudoku puzzles, finding all solutions from seed state.
 # could also be done in object oriented, with grid being a parent object to rows, columns, squares
 
 import numpy as np
