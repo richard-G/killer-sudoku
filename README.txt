@@ -4,6 +4,7 @@ TODO:
 (python)
   - sudoku solver (DONE)
   - sudoku generator (DONE)
+  - subgrid builder (IN PROGRESS)
   - killer sudoku solver
   - killer sudoku generator
   - rank puzzles by difficulty
