@@ -6,24 +6,37 @@ import numpy as np
 # initialize empty board, to test we can build this as a sudoku solver (import a grid known to have a unique solution)
 # grid = [[0 for i in range(10)] for j in range(10)]
 
-grid = np.array([
-    [5, 3, 0, 0, 7, 0, 0, 0, 0],
-    [6, 0, 0, 1, 9, 5, 0, 0, 0],
-    [0, 9, 8, 0, 0, 0, 0, 6, 0],
-    [8, 0, 0, 0, 6, 0, 0, 0, 3],
-    [4, 0, 0, 8, 0, 3, 0, 0, 1],
-    [7, 0, 0, 0, 2, 0, 0, 0, 6],
-    [0, 6, 0, 0, 0, 0, 2, 8, 0],
-    [0, 0, 0, 4, 1, 9, 0, 0, 5],
-    [0, 0, 0, 0, 8, 0, 0, 7, 9]
-])
+# grid = np.array([
+#     [5, 3, 0, 0, 7, 0, 0, 0, 0],
+#     [6, 0, 0, 1, 9, 5, 0, 0, 0],
+#     [0, 9, 8, 0, 0, 0, 0, 6, 0],
+#     [8, 0, 0, 0, 6, 0, 0, 0, 3],
+#     [4, 0, 0, 8, 0, 3, 0, 0, 1],
+#     [7, 0, 0, 0, 2, 0, 0, 0, 6],
+#     [0, 6, 0, 0, 0, 0, 2, 8, 0],
+#     [0, 0, 0, 4, 1, 9, 0, 0, 5],
+#     [0, 0, 0, 0, 8, 0, 0, 7, 9]
+# ])
 
+grid = np.array([
+    [4, 6, 0, 5, 7, 0, 3, 9, 1],
+    [1, 7, 9, 3, 6, 0, 0, 0, 5],
+    [5, 3, 0, 9, 4, 1, 0, 0, 6],
+    [6, 0, 0, 2, 3, 4, 9, 8, 7],
+    [2, 8, 4, 7, 9, 5, 1, 6, 3],
+    [7, 9, 3, 8, 1, 6, 2, 5, 4],
+    [9, 2, 7, 4, 5, 3, 6, 1, 8],
+    [8, 4, 6, 1, 2, 7, 5, 3, 9],
+    [3, 0, 0, 6, 8, 9, 0, 0, 2]
+])
 
 # function to display the grid
 def display_grid():
     # global grid
     for row in grid:
         print(row)
+
+    print('-' * 20)
 
 
 # returns true if a given number is allowed at a given position, on the global grid
