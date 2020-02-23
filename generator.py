@@ -4,9 +4,13 @@ import numpy as np
 from random import sample
 from os import sys
 import itertools
+import signal
+import pickle
 
-# initialize empty board, to test we can build this as a sudoku solver (import a grid known to have a unique solution)
 
+def handler(signum, frame):
+    print(f'handler called! {signum}...{frame}')
+    solve_puzzle(init=True)
 
 # function to display the grid
 def display_grid(solved_grid):
@@ -52,10 +56,14 @@ def solve_puzzle(init=False):
 
         grid = np.array([[0 for i in range(9)] for j in range(9)])
 
-    i_range, j_range = seed
-    # for i in i_range:
-    #     for j in j_range:
-    for i, j in itertools.product(i_range, j_range):
+        def handle(signum, frame):
+            print(f'handle called at {signum}..{frame}')
+            return solve_puzzle(init=True)
+        # add timeout here, if not met just call again
+        signal.signal(signal.SIGALRM, handle)
+        signal.alarm(1)
+
+    for i, j in itertools.product(*seed):
         if grid[i][j] == 0:
             for number in range(1, 10):
                 if is_valid(number, (i, j), grid):
@@ -67,20 +75,31 @@ def solve_puzzle(init=False):
 
     global total
     print(f'puzzle {total - iteration} generated!')
+    grids.append(grid)
     display_grid(grid)
+    signal.alarm(0)
     iteration -= 1
 
     # quite messy, find another way? should really be handled in parent function but can't figure out how to break
     # out of stack
     if iteration == 0:
+        # with open('s_puzzles.pickle', 'wb') as handle:
+        #     pickle.dump(grids, handle)
+        #
+        #     print('data saved!')
         sys.exit()
-    solve_puzzle(init=True)
+    # signal.signal(signal.SIGALRM, handler)
+    # signal.alarm(1)
+    # solve_puzzle(init=True)
 
 
 grid = []
 seed = []
 iteration = []
 total = 0
+
+# output
+grids = []
 
 
 # global iteration
@@ -102,3 +121,6 @@ def main():
 
 # call
 main()
+
+
+

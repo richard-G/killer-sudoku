@@ -4,9 +4,9 @@ TODO:
 (python)
   - sudoku solver (DONE)
   - sudoku generator (DONE)
-  - subgrid builder (IN PROGRESS)
+  - subgrid builder (DONE)
   - killer sudoku solver
-  - killer sudoku generator
+  - killer sudoku generator (IN PROGRESS)
   - rank puzzles by difficulty
 (js)
   - simple sudoku app
