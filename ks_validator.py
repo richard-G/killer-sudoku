@@ -25,7 +25,7 @@ except FileNotFoundError:
     sys.exit()
 
 # output puzzles, list of 2-tuples - (grid, cage_layout)
-# ks_puzzles :: [ ([], {}) ]
+# ks_puzzles :: [ ([[]], {}) ]
 ks_puzzles = []
 
 
@@ -60,6 +60,7 @@ def generate_ks():
 
             if is_valid(grid, cage_layout):
                 print('valid puzzle found!')
+                # here, if is_unique(grid, cage_layout) logic
                 ks_puzzles.append((grid, cage_layout))
                 valids += 1
                 break
@@ -69,6 +70,29 @@ def generate_ks():
                 continue
 
     print(f'total valid: {valids}. total invalid: {invalids}')
+
+
+initialised_ks_puzzles = []
+
+
+# initialises empty ks puzzles by getting each number from the completed grid and calculating the .total of each cage
+# returns the cages dict with the total attribute for each cage
+def initialise_puzzles():
+    for grid, cages in ks_puzzles:
+        for cage in cages.values():
+            cage.total = 0
+            for cell in cage.elements:
+                i, j = cell.position
+                cage.total += grid[i][j]
+
+            # print(f'total for cage {cage}... {cage.total}')
+
+        initialised_ks_puzzles.append(cages)
+
+    with open('initialised_ks_puzzles.pickle', 'wb') as file:
+        pickle.dump(initialised_ks_puzzles, file)
+        print('data saved!')
+        print(f'puzzles stored: {len(initialised_ks_puzzles)}')
 
 
 def display_grid(grid):
@@ -91,8 +115,8 @@ def reconstruct_layout(cages_dict):
 
 if __name__ == '__main__':
     generate_ks()
+    initialise_puzzles()
 
     gen_grid, gen_layout = ks_puzzles[0]
-
     display_grid(gen_grid)
     reconstruct_layout(gen_layout)

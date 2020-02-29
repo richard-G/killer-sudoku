@@ -34,9 +34,9 @@ def is_valid(number, position, input_grid):
         if row[col] == number:
             return False
 
+    # check subgrid
     i0 = (row_index // 3) * 3
     j0 = (col // 3) * 3
-
     for i in range(0, 3):
         for j in range(0, 3):
             if input_grid[i0 + i][j0 + j] == number:
@@ -44,12 +44,27 @@ def is_valid(number, position, input_grid):
 
     return True
 
+is_done = False
+failed = False
+
 
 # global iteration, seed, grid
 # recursive function to be called to solve the puzzle.
 def solve_puzzle(init=False):
-    global seed, grid, iteration
+    # print('reset!')
+    global is_done
+    global failed
+    global solved
+    # if is_done and not init:
+    #     print('returned!')
+    #     return
+    global seed, grid
+    if failed:
+        return
     if init:
+        is_done = False
+        failed = False
+        # print(f'in here...')
         i_range = sample(list(range(0, 9)), k=9)
         j_range = sample(list(range(0, 9)), k=9)
         seed = (i_range, j_range)
@@ -57,11 +72,16 @@ def solve_puzzle(init=False):
         grid = np.array([[0 for i in range(9)] for j in range(9)])
 
         def handle(signum, frame):
-            print(f'handle called at {signum}..{frame}')
-            return solve_puzzle(init=True)
+            # print(f'handle called at {signum}..{frame}')
+            global failed
+            failed = True
+            signal.signal(signal.SIGALRM, handle)
+            signal.setitimer(signal.ITIMER_REAL, 0.3)
+            solve_puzzle(init=True)
+
         # add timeout here, if not met just call again
         signal.signal(signal.SIGALRM, handle)
-        signal.alarm(1)
+        signal.setitimer(signal.ITIMER_REAL, 0.3)
 
     for i, j in itertools.product(*seed):
         if grid[i][j] == 0:
@@ -69,37 +89,34 @@ def solve_puzzle(init=False):
                 if is_valid(number, (i, j), grid):
                     grid[i][j] = number
                     solve_puzzle()
+                    if is_done:
+                        return
                     # print(i_range.index(i), i)
                     grid[i][j] = 0
             return
 
-    global total
-    print(f'puzzle {total - iteration} generated!')
+    solved += 1
+    print(f'puzzle {solved} generated! (iteration {counter})')
     grids.append(grid)
     display_grid(grid)
+    is_done = True
     signal.alarm(0)
-    iteration -= 1
-
-    # quite messy, find another way? should really be handled in parent function but can't figure out how to break
-    # out of stack
-    if iteration == 0:
-        # with open('s_puzzles.pickle', 'wb') as handle:
-        #     pickle.dump(grids, handle)
-        #
-        #     print('data saved!')
-        sys.exit()
-    # signal.signal(signal.SIGALRM, handler)
-    # signal.alarm(1)
-    # solve_puzzle(init=True)
 
 
 grid = []
 seed = []
 iteration = []
 total = 0
-
+counter = 1
 # output
+solved = 0
 grids = []
+
+
+def save_grids():
+    with open('s_puzzles.pickle', 'wb') as file:
+        pickle.dump(grids, file)
+        print('data saved!')
 
 
 # global iteration
@@ -109,14 +126,30 @@ def main():
         try:
             global iteration
             global total
-            iteration = int(input('how many puzzles?: '))
-            total = iteration + 1
+            global counter
+            global failed
+            runs = int(input('how many puzzles?: ')) + 1
         except ValueError:
             print('enter a number...')
         else:
             break
 
-    solve_puzzle(init=True)
+    while counter != runs:
+        failed = False
+        solve_puzzle(init=True)
+        counter += 1
+        # print('out here...')
+
+    # save functionality
+    user_input = input('save output? [y/n]')
+    while user_input not in ['y', 'n']:
+        user_input = input('save output? [y/n]: ')
+    if user_input == 'y':
+        save_grids()
+    else:
+        print('output not saved...')
+
+    print('ending process...')
 
 
 # call

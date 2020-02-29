@@ -13,6 +13,7 @@ cages = {}
 class Cell:
     def __init__(self, position):
         self.position = position
+        self.value = 0
 
     def get_neighbours(self):
         i, j = self.position
@@ -64,6 +65,7 @@ class Cage:
         self.key = key
         self.elements = []
         self.elements.append(elements)
+        self.total = 0
 
     def __len__(self):
         return len(self.elements)
@@ -73,6 +75,13 @@ class Cage:
 
     def add_cell(self, cell):
         self.elements.append(cell)
+
+    def current_sum(self):
+        accumulator = 0
+        for cell in self.elements:
+            accumulator += cell.value
+
+        return accumulator
 
     # only way to create a new cage, makes a new key in dictionary and takes a cell on init.
     @classmethod
@@ -142,10 +151,19 @@ def generate_cage_layout():
                 Cage.add(cell)
                 # print('below')
 
-    print(f'cage layout {total - iterations} generated!')
-    display_grid()
 
-    cage_layouts.append(cages)
+    for cage in cages.values():
+        if len(cage) == 1:
+            print('cage layout rejected!')
+            print(cage.key)
+            display_grid()
+    else:
+        print('cage layout accepted!')
+        print(f'cage layout {total - iterations} generated!')
+        display_grid()
+        cage_layouts.append(cages)
+
+
 
 iterations = 0
 total = 0
@@ -169,15 +187,27 @@ def main():
         cages = {}
         total += 1
 
+    user_input = input('save output? [y/n]: ')
+    while user_input not in ['y', 'n']:
+        user_input = input('save output? [y/n]: ')
+
+    if user_input == 'y':
+        save_output()
+    else:
+        print('output not saved...')
+
+    print('ending process...')
+
+
+def save_output():
+    with open('cage_layouts.pickle', 'wb') as handle:
+        pickle.dump(cage_layouts, handle)
+
+        print('data saved!')
+
 
 if __name__ == '__main__':
     main()
-
-
-# with open('cage_layouts.pickle', 'wb') as handle:
-#     pickle.dump(cage_layouts, handle)
-#
-#     print('data saved!')
 
 
 # TODO: ensure no single cages are created
