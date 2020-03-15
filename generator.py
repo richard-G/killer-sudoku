@@ -141,7 +141,7 @@ def main():
         # print('out here...')
 
     # save functionality
-    user_input = input('save output? [y/n]')
+    user_input = input('save output? [y/n]: ')
     while user_input not in ['y', 'n']:
         user_input = input('save output? [y/n]: ')
     if user_input == 'y':

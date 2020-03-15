@@ -71,7 +71,10 @@ class Cage:
         return len(self.elements)
 
     def __iter__(self):
-        yield self.elements
+        yield from self.elements
+
+    def __repr__(self):
+        return f'{self.key} - elements: {self.elements}'
 
     def add_cell(self, cell):
         self.elements.append(cell)
@@ -109,16 +112,14 @@ grid = [[Cell((i, j)) for i in range(9)] for j in range(9)]
 
 
 def generate_cage_layout():
-    global iterations
+    global iterations, total
 
-    # randomise order that will be looped through
+    # randomise cell order that will be looped through
     i_range = random.sample(list(range(0, 9)), k=9)
     j_range = random.sample(list(range(0, 9)), k=9)
 
     big_set = [(i, j) for (i, j) in itertools.product(i_range, j_range)]
     shuffled = random.sample(big_set, k=len(big_set))
-
-
 
     # main logic
     for row, col in shuffled:
@@ -138,12 +139,6 @@ def generate_cage_layout():
             # print(f'4 neighbouring cages found for {cell.position}: {neighbour_cages}')
             cages[random.choice(neighbour_cages)].add_cell(cell)
         else:  # if neighbouring, have some probability of merging, else create new
-            # print(f'neighbour cages found for {cell.position}: {neighbour_cages}')
-            # Cage.add(cell)
-            # for now, 50% chance, in future do amount of neighbouring cages / total neighbours
-            # look into random.choices()
-            # need additional weighting to penalise high element lengths - this can be used to determine difficulty too
-            # print(f'none of previous conditions met for {cell.position}: {neighbour_cages}... deciding randomly')
             if random.random() > 0.2:
                 cages[random.choice(filtered)].add_cell(cell)
                 # print('above')
@@ -151,18 +146,42 @@ def generate_cage_layout():
                 Cage.add(cell)
                 # print('below')
 
-
-    for cage in cages.values():
-        if len(cage) == 1:
-            print('cage layout rejected!')
-            print(cage.key)
-            display_grid()
-    else:
+    if no_lone_cells(cages.values()):
         print('cage layout accepted!')
+        for cage in cages.values():
+            print(len(cage), '---', cage.elements)
         print(f'cage layout {total - iterations} generated!')
         display_grid()
         cage_layouts.append(cages)
 
+        # total += 1
+
+    # for cage in cages.values():
+    #     if len(cage) == 1:
+    #         print('cage layout rejected!')
+    #         print(cage.key)
+    #         print(cage.elements)
+    #         display_grid()
+    #         continue
+    # else:
+    #     print('cage layout accepted!')
+    #     for cage in cages.values():
+    #         print(len(cage), '---', cage.elements)
+    #     print(f'cage layout {total - iterations} generated!')
+    #     display_grid()
+    #     cage_layouts.append(cages)
+
+
+def no_lone_cells(cages):
+    for cage in cages:
+        if len(cage) == 1:
+            print('cage layout rejected!')
+            print(cage.key)
+            print(cage.elements)
+            display_grid()
+            return False
+
+    return True
 
 
 iterations = 0
@@ -181,11 +200,13 @@ def main():
         else:
             break
 
-    for i in range(iterations):
+    while len(cage_layouts) < iterations:
         generate_cage_layout()
         global cages
         cages = {}
         total += 1
+
+    print(f'{len(cage_layouts)} layouts found!')
 
     user_input = input('save output? [y/n]: ')
     while user_input not in ['y', 'n']:
@@ -200,10 +221,23 @@ def main():
 
 
 def save_output():
+    # for cage_layout in cage_layouts:
+    #     reconstruct_layout(cage_layout)
     with open('cage_layouts.pickle', 'wb') as handle:
         pickle.dump(cage_layouts, handle)
 
         print('data saved!')
+
+
+# def reconstruct_layout(cages_dict):
+#     new_grid = [[0 for i in range(9)] for j in range(9)]
+#     for cage in cages_dict.values():
+#         for cell in cage.elements:
+#             # print(f'{cage.key}: {cell.position}')
+#             i, j = cell.position
+#             new_grid[i][j] = cage.key
+#
+#     display_grid(new_grid)
 
 
 if __name__ == '__main__':

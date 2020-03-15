@@ -60,7 +60,6 @@ def generate_ks():
 
             if is_valid(grid, cage_layout):
                 print('valid puzzle found!')
-                # here, if is_unique(grid, cage_layout) logic
                 ks_puzzles.append((grid, cage_layout))
                 valids += 1
                 break
@@ -78,17 +77,28 @@ initialised_ks_puzzles = []
 # initialises empty ks puzzles by getting each number from the completed grid and calculating the .total of each cage
 # returns the cages dict with the total attribute for each cage
 def initialise_puzzles():
-    for grid, cages in ks_puzzles:
-        for cage in cages.values():
+    for grid, cage_layout in ks_puzzles:
+        for cage in cage_layout.values():
             cage.total = 0
-            for cell in cage.elements:
+            for cell in cage:
                 i, j = cell.position
                 cage.total += grid[i][j]
 
             # print(f'total for cage {cage}... {cage.total}')
 
-        initialised_ks_puzzles.append(cages)
+        initialised_ks_puzzles.append(cage_layout)
 
+    user_input = input('save output? [y/n]: ')
+    while user_input not in ['y', 'n']:
+        user_input = input('save output? [y/n]: ')
+
+    if user_input == 'y':
+        save_output()
+    else:
+        print('output not saved...')
+
+
+def save_output():
     with open('initialised_ks_puzzles.pickle', 'wb') as file:
         pickle.dump(initialised_ks_puzzles, file)
         print('data saved!')
