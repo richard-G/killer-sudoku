@@ -1,7 +1,6 @@
 # used to solve killer sudoku puzzles through brute force
 # input puzzles will be valid, this will determine if they have unique solutions
 
-import numpy as np
 import pickle
 import sys
 
