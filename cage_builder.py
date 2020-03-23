@@ -154,23 +154,6 @@ def generate_cage_layout():
         display_grid()
         cage_layouts.append(cages)
 
-        # total += 1
-
-    # for cage in cages.values():
-    #     if len(cage) == 1:
-    #         print('cage layout rejected!')
-    #         print(cage.key)
-    #         print(cage.elements)
-    #         display_grid()
-    #         continue
-    # else:
-    #     print('cage layout accepted!')
-    #     for cage in cages.values():
-    #         print(len(cage), '---', cage.elements)
-    #     print(f'cage layout {total - iterations} generated!')
-    #     display_grid()
-    #     cage_layouts.append(cages)
-
 
 def no_lone_cells(cages):
     for cage in cages:

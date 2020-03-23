@@ -84,8 +84,6 @@ def initialise_puzzles():
                 i, j = cell.position
                 cage.total += grid[i][j]
 
-            # print(f'total for cage {cage}... {cage.total}')
-
         initialised_ks_puzzles.append(cage_layout)
 
     user_input = input('save output? [y/n]: ')
@@ -116,7 +114,6 @@ def reconstruct_layout(cages_dict):
     new_grid = [[0 for i in range(9)] for j in range(9)]
     for cage in cages_dict.values():
         for cell in cage.elements:
-            # print(f'{cage.key}: {cell.position}')
             i, j = cell.position
             new_grid[i][j] = cage.key
 
