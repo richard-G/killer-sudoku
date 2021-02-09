@@ -32,3 +32,12 @@ Combines cage layouts and completed sudoku grids to generate valid KS puzzles
 
 ### `ks_solver.py`
 Solves generated KS puzzles and gives number of possible solutions. For a KS puzzle to be valid, there should exist a unique solution.
+
+
+
+### WIP
+
+This is a work in progress. There are still several tasks that need to be completed before this program can successfully generate valid, unique KS puzzles of varying difficulty.
+
+Notably, using brute-force recursion to solve killer sudoku puzzles is inefficient and sometimes runs indefinitely while trying to solve the puzzle. Heuristics for solving KS puzzles need to be implemented to improve this process.
+
